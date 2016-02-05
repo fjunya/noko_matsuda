@@ -1,0 +1,10 @@
+<ol class="breadcrumb">
+  <li><a href="{% url 'main_menu' %}">メインメニュー</a></li>
+  <li><a href="{% url 'admin_menu' %}">管理メニュー</a></li>
+  {% if not active %}
+  <li class="active">アカウント管理</li>
+  {% else %}
+  <li><a href="{% url 'account_listing' %}">アカウント管理</a></li>
+  <li class="active">{{ active }}</li>
+  {% endif %}
+</ol>

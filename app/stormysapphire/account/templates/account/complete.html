@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load account %}
+{% block title %} | アカウント管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'account/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>アカウント管理</h1>
+</div>
+
+<div class="alert alert-info" role="">
+  <a href="#" class="alert-link">{{ message }}</a>
+</div>
+<a href="{% url 'account_listing' %}" class="btn btn-lg btn-primary">一覧へ戻る</a>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

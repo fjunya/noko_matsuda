@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load participantgroup %}
+{% block title %} | 端末グループ{% if edit_type == 'create' %}追加{% else %}編集{% endif %}{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="/static/css/jquery-ui/1.11.4/jquery-ui.min.css" />
+<style type="text/css">
+input.form-control, select.form-control { display: inline-block; width: initial; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if edit_type == 'create' %}
+{% include 'participantgroup/parts/breadcrum' with active='端末グループ追加' %}
+{% else %}
+{% include 'participantgroup/parts/breadcrum' with active='端末グループ編集' %}
+{% endif %}
+
+<div class="page-header">
+  <h1>端末グループ{% if edit_type == 'create' %}追加{% else %}編集{% endif %}</h1>
+</div>
+
+<p class="lead">端末グループの{% if edit_type == 'create' %}追加{% else %}編集{% endif %}を行います。</p>
+
+{{ form.non_field_errors }}
+<form method="post" action="" id="form">
+  {% csrf_token %}
+  <table class="table table-bordered">
+    <colgroup>
+      <col width="20%">
+      <col width="80%">
+    </colgroup>
+    <tbody>
+      <tr>
+        <th class="bg-info">グループ名 {% include 'parts/required_icon' %}</th>
+        <td>{{ form.group_name.errors }}{{ form.group_name }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">説明</th>
+        <td>{{ form.info.errors }}{{ form.info }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">端末</th>
+        <td>
+          {{ form.participant.errors }}
+          <table>
+            <tr>
+              <td>
+                <select name="participantSelectionFrom" id="participantSelectionFrom" multiple="multiple" size="5">
+                  {% for participant in participants %}
+                  <option value="{{ participant.id }}">{{ participant.display_name }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
+                <button id="participantAddButton" class="btn btn-xs btn-warning" style="display: block; margin: 0.5em;">追加 &#9658;</button>
+                <button id="participantRemoveButton" class="btn btn-xs btn-primary" style="display: block; margin: 0.5em;">&#9668; 削除</button>
+              </td>
+              <td>{{ form.participant }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <a href="{% url 'participant_group_listing' %}" class="btn btn-lg btn-primary">戻る</a>
+  <button type="submit" class="btn btn-lg btn-primary">{% if edit_type == 'create' %}登録{% else %}更新{% endif %}</button>
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/jquery-ui/1.11.4/jquery-ui.min.js"></script>
+<script src="/static/js/jquery-ui/1.11.4/i18n/datepicker-ja.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#form input[type=email], " +
+    "#form input[type=number], " +
+    "#form input[type=password], " +
+    "#form input[type=text], " +
+    "#form select, " +
+    "#form textarea").addClass("form-control");
+
+  var participants = [
+    {% for participant in participants %}
+    {"{{ participant.id }}": "{{ participant.display_name }}"}{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  ];
+  var participantsIndex = {};
+
+  $.each(participants, function () {
+    var participant = this;
+    participantsIndex[participant.value] = participant;
+  });
+
+  $("#id_participant option:not(:selected)").each(function () {
+    this.remove();
+  });
+
+  $("ul.errorlist > li").addClass("alert alert-danger");
+
+  $("#participantAddButton").on("click", function (e) {
+    e.preventDefault();
+    $("#participantSelectionFrom option:selected").each(function () {
+      var value = $(this).val();
+      var name = $(this).text();
+      if ($("#id_participant option[value='" + value + "']").size() == 0) {
+        $("#id_participant").append($("<option>").val(value).text(name));
+      }
+    });
+  });
+
+  $("#participantRemoveButton").on("click", function (e) {
+    e.preventDefault();
+    $("#id_participant option:selected").each(function () {
+      this.remove();
+    });
+  });
+
+  $("#form").on("submit", function (e) {
+    $("#id_participant option").attr("selected", "selected");
+  });
+});
+</script>
+{% endblock %}

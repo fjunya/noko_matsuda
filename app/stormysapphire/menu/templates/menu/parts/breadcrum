@@ -1,0 +1,8 @@
+<ol class="breadcrumb">
+  {% if not active %}
+  <li class="active">メインメニュー</li>
+  {% else %}
+  <li><a href="{% url 'main_menu' %}">メインメニュー</a></li>
+  <li class="active">{{ active }}</li>
+  {% endif %}
+</ol>

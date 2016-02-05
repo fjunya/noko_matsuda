@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load participant %}
+{% block title %} | 端末管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'participant/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>端末管理</h1>
+</div>
+
+<div class="alert alert-info" role="">
+  <a href="#" class="alert-link">{{ message }}</a>
+</div>
+<a href="{% url 'participant_listing' %}" class="btn btn-lg btn-primary">一覧へ戻る</a>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

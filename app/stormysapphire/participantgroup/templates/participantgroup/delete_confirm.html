@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load participantgroup %}
+{% block title %} | 端末グループ削除{% endblock %}
+{% block style %}
+<style type="text/css">
+input.form-control, select.form-control { display: inline-block; width: initial; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'participantgroup/parts/breadcrum' with active='端末グループ削除' %}
+
+<div class="page-header">
+  <h1>端末グループ削除</h1>
+</div>
+
+<p class="lead">端末グループの削除を行います。</p>
+
+{{ form.non_field_errors }}
+<form method="post" action="" id="form">
+  {% csrf_token %}
+  {{ form.participant_group_id.errors }}{{ form.participant_group_id.as_hidden }}
+  {% if form.is_valid %}
+  <table class="table table-bordered">
+    <colgroup>
+      <col width="40%">
+      <col width="60%">
+    </colgroup>
+    <tr>
+      <th class="bg-info">グループ名</th>
+      <th class="bg-info">説明</th>
+    </tr>
+    {% for participant_group in participant_groups %}
+    <tr>
+      <td>{{ participant_group.group_name }}</td>
+      <td>{{ participant_group.info|blank }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  <a href="{% url 'participant_group_listing' %}" class="btn btn-lg btn-primary">戻る</a>
+  {% if form.is_valid %}
+  <button type="submit" class="btn btn-lg btn-danger">削除</button>
+  {% endif %}
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#form input[type=email], " +
+    "#form input[type=number], " +
+    "#form input[type=password], " +
+    "#form input[type=text], " +
+    "#form select, " +
+    "#form textarea").addClass("form-control");
+
+  $("ul.errorlist > li").addClass("alert alert-danger");
+});
+</script>
+{% endblock %}

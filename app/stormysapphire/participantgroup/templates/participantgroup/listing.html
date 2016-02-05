@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load participantgroup %}
+{% block title %} | 端末グループ管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'participantgroup/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>端末グループ管理</h1>
+</div>
+
+<p class="lead">端末グループの追加・編集・削除を行います。</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="btn-group">
+      <a href="{% url 'participant_group_create' %}"><button type="button" class="btn btn-sm btn-primary">新規追加</button></a>
+      <a href="{% url 'participant_group_delete' %}" id="participant_group_delete_button"><button type="button" class="btn btn-sm btn-primary">選択した端末グループの削除</button></a>
+      <a href="{% url 'participant_group_import' %}"><button type="button" class="btn btn-sm btn-primary">インポート</button></a>
+      <a href="{% url 'participant_group_export' %}"><button type="button" class="btn btn-sm btn-primary">エクスポート</button></a>
+    </div>
+  </div>
+</div>
+
+{% if not participant_groups %}
+<div class="alert alert-warning" role="alert">端末グループが存在しません。</div>
+{% else %}
+
+{% if participant_groups.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if participant_groups.has_previous %}<li><a href="?p={{ participant_groups.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if participant_groups.has_next %}<li><a href="?p={{ participant_groups.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+
+<table class="table table-bordered">
+  <colgroup>
+    <col width="2%">
+    <col width="30%">
+    <col width="68%">
+  </colgroup>
+  <thead>
+    <tr class="bg-info">
+      <th><input type="checkbox" id="participant_group_delete_check_all" name="participant_group_delete_check_all"></input></th>
+      <th>グループ名</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for participant_group in participant_groups %}
+    <tr>
+      <td class="participant_group_delete_check"><input type="checkbox" value="{{ participant_group.id }}"></input></td>
+      <td><a href="{% url 'participant_group_update' participant_group.id %}">{{ participant_group.group_name }}</a></td>
+      <td>{{ participant_group.info|blank }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if participant_groups.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if participant_groups.has_previous %}<li><a href="?p={{ participant_groups.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if participant_groups.has_next %}<li><a href="?p={{ participant_groups.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#participant_group_delete_check_all").on("click", function (e) {
+    $('.participant_group_delete_check input[type=checkbox]').prop('checked', $(this).is(':checked') ? true : false)
+  });
+
+  $('.participant_group_delete_check input[type=checkbox]').on("click", function (e) {
+    if (! $(this).is(':checked')) {
+      $('#participant_group_delete_check_all').prop('checked', false);
+    } else {
+      var ok = true;
+      $('.participant_group_delete_check input[type=checkbox]').each(function () {
+        if (! $(this).is(':checked')) { ok = false; }
+      })
+      if (ok) {
+        $('#participant_group_delete_check_all').prop('checked', true);
+      }
+    }
+  });
+
+  $("#participant_group_delete_button").on("click", function (e) {
+    if (! $(".participant_group_delete_check input[type=checkbox]:checked").size()) {
+      return false;
+    }
+    var query = {"participant_group_id": []};
+    $(".participant_group_delete_check input[type=checkbox]:checked").each(function () {
+      query["participant_group_id"].push(this.value);
+    })
+    this.href = "{% url 'participant_group_delete' %}" + "?" + decodeURIComponent($.param(query, true));
+  });
+});
+</script>
+{% endblock %}

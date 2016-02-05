@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load accountgroup %}
+{% block title %} | アカウントグループ管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'accountgroup/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>アカウントグループ管理</h1>
+</div>
+
+<p class="lead">アカウントグループの追加・編集・削除を行います。</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="btn-group">
+      <a href="{% url 'account_group_create' %}"><button type="button" class="btn btn-sm btn-primary">新規追加</button></a>
+      <a href="{% url 'account_group_delete' %}" id="account_group_delete_button"><button type="button" class="btn btn-sm btn-primary">選択したアカウントグループの削除</button></a>
+      <a href="{% url 'account_group_import' %}"><button type="button" class="btn btn-sm btn-primary">インポート</button></a>
+      <a href="{% url 'account_group_export' %}"><button type="button" class="btn btn-sm btn-primary">エクスポート</button></a>
+    </div>
+  </div>
+</div>
+
+{% if not account_groups %}
+<div class="alert alert-warning" role="alert">アカウントグループが存在しません。</div>
+{% else %}
+
+{% if account_groups.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if account_groups.has_previous %}<li><a href="?p={{ account_groups.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if account_groups.has_next %}<li><a href="?p={{ account_groups.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+
+<table class="table table-bordered">
+  <colgroup>
+    <col width="2%">
+    <col width="30%">
+    <col width="68%">
+  </colgroup>
+  <thead>
+    <tr class="bg-info">
+      <th><input type="checkbox" id="account_group_delete_check_all" name="account_group_delete_check_all"></input></th>
+      <th>アカウントグループ名</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for account_group in account_groups %}
+    <tr>
+      <td class="account_group_delete_check"><input type="checkbox" value="{{ account_group.id }}"></input></td>
+      <td><a href="{% url 'account_group_update' account_group.id %}">{{ account_group.name }}</a></td>
+      <td>{{ account_group.info|blank }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if account_groups.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if account_groups.has_previous %}<li><a href="?p={{ account_groups.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if account_groups.has_next %}<li><a href="?p={{ account_groups.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#account_group_delete_check_all").on("click", function (e) {
+    $('.account_group_delete_check input[type=checkbox]').prop('checked', $(this).is(':checked') ? true : false)
+  });
+
+  $('.account_group_delete_check input[type=checkbox]').on("click", function (e) {
+    if (! $(this).is(':checked')) {
+      $('#account_group_delete_check_all').prop('checked', false);
+    } else {
+      var ok = true;
+      $('.account_group_delete_check input[type=checkbox]').each(function () {
+        if (! $(this).is(':checked')) { ok = false; }
+      })
+      if (ok) {
+        $('#account_group_delete_check_all').prop('checked', true);
+      }
+    }
+  });
+
+  $("#account_group_delete_button").on("click", function (e) {
+    if (! $(".account_group_delete_check input[type=checkbox]:checked").size()) {
+      return false;
+    }
+    var query = {"account_group_id": []};
+    $(".account_group_delete_check input[type=checkbox]:checked").each(function () {
+      query["account_group_id"].push(this.value);
+    })
+    this.href = "{% url 'account_group_delete' %}" + "?" + decodeURIComponent($.param(query, true));
+  });
+});
+</script>
+{% endblock %}

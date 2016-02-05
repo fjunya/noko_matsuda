@@ -1,0 +1,47 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'top' %}">遠隔講義予約システム</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">メニュー <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'reserve_now_monthly' %}">会議予約</a></li>
+            <li><a href="">即時会議</a></li>
+            <li><a href="">会議制御</a></li>
+            {% if user.is_staff %}
+            <li><a href="{% url 'admin_menu' %}">管理メニュー</a></li>
+            <li role="separator" class="divider"></li>
+            <!--<li class="dropdown-header">管理メニュー</li>-->
+            <li><a href="{% url 'participant_listing' %}">端末管理</a></li>
+            <li><a href="{% url 'participant_group_listing' %}">端末グループ管理</a></li>
+            <li><a href="{% url 'account_listing' %}">アカウント管理</a></li>
+            <li><a href="{% url 'account_group_listing' %}">アカウントグループ管理</a></li>
+            <li><a href="">会議テンプレート</a></li>
+            <li><a href="">録画端末管理</a></li>
+            <li><a href="">会議レポート</a></li>
+            <li><a href="">TMP 管理</a></li>
+            <li><a href="">MCU 管理</a></li>
+            {% endif %}
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'logout' %}">ログアウト</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">ログイン</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

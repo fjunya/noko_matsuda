@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load account %}
+{% block title %} | アカウント{% if edit_type == 'create' %}追加{% else %}編集{% endif %}{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="/static/css/jquery-ui/1.11.4/jquery-ui.min.css" />
+<style type="text/css">
+input.form-control, select.form-control { display: inline-block; width: initial; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if edit_type == 'create' %}
+{% include 'account/parts/breadcrum' with active='アカウント追加' %}
+{% else %}
+{% include 'account/parts/breadcrum' with active='アカウント編集' %}
+{% endif %}
+
+<div class="page-header">
+  <h1>アカウント{% if edit_type == 'create' %}追加{% else %}編集{% endif %}</h1>
+</div>
+
+<p class="lead">アカウントの{% if edit_type == 'create' %}追加{% else %}編集{% endif %}を行います。</p>
+
+{{ form.non_field_errors }}
+<form method="post" action="" id="form">
+  {% csrf_token %}
+  <table class="table table-bordered">
+    <colgroup>
+      <col width="20%">
+      <col width="80%">
+    </colgroup>
+    <tbody>
+      {% if edit_type == 'create' %}
+      <tr>
+        <th class="bg-info">ユーザ ID {% include 'parts/required_icon' %}</th>
+        <td>{{ form.username.errors }}{{ form.username }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <th class="bg-info">ユーザ ID</th>
+        <td>{{ account.user.username }}{{ form.username.as_hidden }}</td>
+      </tr>
+      {% endif %}
+      <tr>
+        <th class="bg-info">パスワード</th>
+        <td>
+          {{ form.password.errors }}{{ form.password }}
+          {% if edit_type == 'update' %}<small>パスワードを変更する場合のみ入力してください。</small>{% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">確認用パスワード</th>
+        <td>
+          {{ form.password2.errors }}{{ form.password2 }}
+          {% if edit_type == 'update' %}<small>パスワードを変更する場合のみ入力してください。</small>{% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">権限 {% include 'parts/required_icon' %}</th>
+        <td>{{ form.role.errors }}{{ form.role }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">氏名 {% include 'parts/required_icon' %}</th>
+        <td>
+          {{ form.last_name.errors }}{{ form.first_name.errors }}
+          {{ form.last_name }} {{ form.first_name }}
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">メールアドレス</th>
+        <td>{{ form.email.errors }}{{ form.email }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">部署</th>
+        <td>{{ form.dept.errors }}{{ form.dept }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">TEL</th>
+        <td>{{ form.tel.errors }}{{ form.tel }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">有効期間 {% include 'parts/required_icon' %}</th>
+        <td>
+          {{ form.date_from.errors }}{{ form.date_to.errors }}{{ form.no_validity.errors }}
+          {{ form.date_from }} 〜
+          {{ form.date_to }}&nbsp;&nbsp;&nbsp;
+          {{ form.no_validity }}
+          <label for="id_no_validity">無期限</label>
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">予約可能期間 {% include 'parts/required_icon' %}</th>
+        <td>
+          {{ form.reserve_days.errors }}{{ form.no_reserve_days.errors }}
+          {{ form.reserve_days }} 日&nbsp;&nbsp;&nbsp;
+          {{ form.no_reserve_days }}
+          <label for="id_no_reserve_days">無期限</label>
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">説明</th>
+        <td>{{ form.info.errors }}{{ form.info }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">グループ</th>
+        <td>
+          {{ form.account_group.errors }}
+          <table>
+            <tr>
+              <td>
+                <select name="groupSelectionFrom" id="groupSelectionFrom" multiple="multiple" size="5">
+                  {% for account_group in account_groups %}
+                  <option value="{{ account_group.id }}">{{ account_group.name }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td>
+                <button id="groupAddButton" class="btn btn-xs btn-warning" style="display: block; margin: 0.5em;">追加 &#9658;</button>
+                <button id="groupRemoveButton" class="btn btn-xs btn-primary" style="display: block; margin: 0.5em;">&#9668; 削除</button>
+              </td>
+              <td>{{ form.account_group }}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <a href="{% url 'account_listing' %}" class="btn btn-lg btn-primary">戻る</a>
+  <button type="submit" class="btn btn-lg btn-primary">{% if edit_type == 'create' %}登録{% else %}更新{% endif %}</button>
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/jquery-ui/1.11.4/jquery-ui.min.js"></script>
+<script src="/static/js/jquery-ui/1.11.4/i18n/datepicker-ja.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#form input[type=email], " +
+    "#form input[type=number], " +
+    "#form input[type=password], " +
+    "#form input[type=text], " +
+    "#form select, " +
+    "#form textarea").addClass("form-control");
+
+  var accountGroups = [
+    {% for account_group in account_groups %}
+    {"{{ account_group.id }}": "{{ account_group.name }}"}{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  ];
+  var accountGroupsIndex = {};
+  var participantsIndex = {};
+
+  $.each(accountGroups, function () {
+    var accountGroup = this;
+    accountGroupsIndex[accountGroup.value] = accountGroup;
+  });
+
+  $("#id_account_group option:not(:selected)").each(function () {
+    this.remove();
+  });
+
+  $("ul.errorlist > li").addClass("alert alert-danger");
+
+  $("#groupAddButton").on("click", function (e) {
+    e.preventDefault();
+    $("#groupSelectionFrom option:selected").each(function () {
+      var value = $(this).val();
+      var name = $(this).text();
+      if ($("#id_account_group option[value='" + value + "']").size() == 0) {
+        $("#id_account_group").append($("<option>").val(value).text(name));
+      }
+    });
+  });
+
+  $("#groupRemoveButton").on("click", function (e) {
+    e.preventDefault();
+    $("#id_account_group option:selected").each(function () {
+      this.remove();
+    });
+  });
+
+  $("#form").on("submit", function (e) {
+    $("#id_account_group option").attr("selected", "selected");
+  });
+
+  $.datepicker.setDefaults($.datepicker.regional["ja"]);
+  $("#id_date_from").datepicker();
+  $("#id_date_to").datepicker();
+});
+</script>
+{% endblock %}

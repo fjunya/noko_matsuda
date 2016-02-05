@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load account %}
+{% block title %} | アカウント削除{% endblock %}
+{% block style %}
+<style type="text/css">
+input.form-control, select.form-control { display: inline-block; width: initial; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'account/parts/breadcrum' with active='アカウント削除' %}
+
+<div class="page-header">
+  <h1>アカウント削除</h1>
+</div>
+
+<p class="lead">アカウントの削除を行います。</p>
+
+{{ form.non_field_errors }}
+<form method="post" action="" id="form">
+  {% csrf_token %}
+  {{ form.user_id.errors }}{{ form.user_id.as_hidden }}
+  {% if form.is_valid %}
+  <table class="table table-bordered">
+    <colgroup>
+      <col width="25%">
+      <col width="20%">
+      <col width="55%">
+    </colgroup>
+    <tr>
+      <th class="bg-info">ユーザー ID</th>
+      <th class="bg-info">権限</th>
+      <th class="bg-info">氏名</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{% if account.user.is_staff %}管理者{% else %}ユーザー{% endif %}</td>
+      <td>{{ user.last_name|blank }} {{ user.first_name|blank }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  <a href="{% url 'account_listing' %}" class="btn btn-lg btn-primary">戻る</a>
+  {% if form.is_valid %}
+  <button type="submit" class="btn btn-lg btn-danger">削除</button>
+  {% endif %}
+</form>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#form input[type=email], " +
+    "#form input[type=number], " +
+    "#form input[type=password], " +
+    "#form input[type=text], " +
+    "#form select, " +
+    "#form textarea").addClass("form-control");
+
+  $("ul.errorlist > li").addClass("alert alert-danger");
+});
+</script>
+{% endblock %}

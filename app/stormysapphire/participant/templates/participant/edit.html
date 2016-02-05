@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load participant %}
+{% block title %} | 端末{% if edit_type == 'create' %}追加{% else %}編集{% endif %}{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="/static/css/jquery-ui/1.11.4/jquery-ui.min.css" />
+<style type="text/css">
+input.form-control, select.form-control { display: inline-block; width: initial; }
+#ping_result { display: inline-block; }
+#ping_result > .alert { margin: 0 1.5em; padding: 0.3em 2em; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if edit_type == 'create' %}
+{% include 'participant/parts/breadcrum' with active='端末追加' %}
+{% else %}
+{% include 'participant/parts/breadcrum' with active='端末編集' %}
+{% endif %}
+
+<div class="page-header">
+  <h1>端末{% if edit_type == 'create' %}追加{% else %}編集{% endif %}</h1>
+</div>
+
+<p class="lead">端末の{% if edit_type == 'create' %}追加{% else %}編集{% endif %}を行います。</p>
+
+{{ form.non_field_errors }}
+<form method="post" action="" id="form">
+  {% csrf_token %}
+  <table class="table table-bordered">
+    <colgroup>
+      <col width="20%">
+      <col width="80%">
+    </colgroup>
+    <tbody>
+      <tr>
+        <th class="bg-info">システム名 {% include 'parts/required_icon' %}</th>
+        <td>{{ form.display_name.errors }}{{ form.display_name }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">接続の方向 {% include 'parts/required_icon' %}</th>
+        <td>{{ form.direction.errors }}{{ form.direction }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">通信の種類 {% include 'parts/required_icon' %}</th>
+        <td>{{ form.type.errors }}{{ form.type }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">接続速度</th>
+        <td>{{ form.bitrate.errors }}{{ form.bitrate }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">ビデオプロトコル {% include 'parts/required_icon' %}</th>
+        <td>{{ form.video_protocol.errors }}{{ form.video_protocol }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">IP アドレス</th>
+        <td>
+          {{ form.ip_address1.errors }}{{ form.ip_address2.errors }}{{ form.ip_address3.errors }}{{ form.ip_address4.errors }}
+          {{ form.ip_address1 }} .
+          {{ form.ip_address2 }} .
+          {{ form.ip_address3 }} .
+          {{ form.ip_address4 }}
+          <a href="" id="ping_button" class="btn btn-xs btn-primary">PING</a>
+          <span id="ping_result"></span>
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">ISDN 電話番号</th>
+        <td>{{ form.phone1.errors }}{{ form.phone1 }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">エイリアス名 / 種類</th>
+        <td>
+          {{ form.alias_name.errors }}{{ form.alias_type.errors }}
+          {{ form.alias_name }}
+          {{ form.alias_type }}
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">SIP アドレス / 種類</th>
+        <td>
+          {{ form.sip_address.errors }}{{ form.alias_type.errors }}
+          {{ form.sip_address }}
+          {{ form.sip_address_type }}
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">カスケード {% include 'parts/required_icon' %}</th>
+        <td>{{ form.cascade_role.errors }}{{ form.cascade_role }}</td>
+      </tr>
+      <tr>
+        <th class="bg-info">機種 / バージョン</th>
+        <td>
+          {{ form.model.errors }}{{ form.software_version.errors }}{{ form.audio_only_flg.errors }}
+          {{ form.model }}
+          {{ form.software_version }}
+          {{ form.audio_only_flg }}
+          <label for="id_audio_only_flg">音声のみ</label>
+        </td>
+      </tr>
+      <tr>
+        <th class="bg-info">説明</th>
+        <td>{{ form.info.errors }}{{ form.info }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <a href="{% url 'participant_listing' %}" class="btn btn-lg btn-primary">戻る</a>
+  <button type="submit" class="btn btn-lg btn-primary">{% if edit_type == 'create' %}登録{% else %}更新{% endif %}</button>
+</form>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/jquery-ui/1.11.4/jquery-ui.min.js"></script>
+<script src="/static/js/jquery-ui/1.11.4/i18n/datepicker-ja.js"></script>
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#form input[type=email], " +
+    "#form input[type=number], " +
+    "#form input[type=password], " +
+    "#form input[type=text], " +
+    "#form select, " +
+    "#form textarea").addClass("form-control");
+
+  var groups = [
+    {% for group in groups %}
+    {"{{ group.id }}": "{{ group.name }}"}{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  ];
+  var groupsIndex = {};
+
+  $.each(groups, function () {
+    var group = this;
+    groupsIndex[group.value] = group;
+  });
+
+  $("#id_group option:not(:selected)").each(function () {
+    this.remove();
+  });
+
+  $("ul.errorlist > li").addClass("alert alert-danger");
+
+  $("#groupAddButton").on("click", function (e) {
+    e.preventDefault();
+    $("#groupSelectionFrom option:selected").each(function () {
+      var value = $(this).val();
+      var name = $(this).text();
+      if ($("#id_group option[value='" + value + "']").size() == 0) {
+        $("#id_group").append($("<option>").val(value).text(name));
+      }
+    });
+  });
+
+  $("#groupRemoveButton").on("click", function (e) {
+    e.preventDefault();
+    $("#id_group option:selected").each(function () {
+      this.remove();
+    });
+  });
+
+  $("#form").on("submit", function (e) {
+    $("#id_group option").attr("selected", "selected");
+  });
+
+  $.datepicker.setDefaults($.datepicker.regional["ja"]);
+  $("#id_date_from").datepicker();
+  $("#id_date_to").datepicker();
+
+  $("#ping_button").on("click", function(e) {
+    e.preventDefault();
+    var ip_address = 
+      $("#id_ip_address1").val() + "." +
+      $("#id_ip_address2").val() + "." +
+      $("#id_ip_address3").val() + "." +
+      $("#id_ip_address4").val();
+    $.ajax({
+      'url': "/api/ping/" + ip_address,
+      'type':'GET',
+      'dataType':'json'
+    }).success(function(response) {
+      $("#ping_result").show();
+      if (response.success) {
+        $("#ping_result").html('<div class="alert alert-success">成功</div>');
+      } else {
+        $("#ping_result").html('<div class="alert alert-danger">失敗</div>');
+      }
+      setTimeout(function () { $("#ping_result").fadeOut(1000); }, 7000);
+    }).error(function(response) {
+      $("#ping_result").show();
+      $("#ping_result").html('<div class="alert alert-danger">エラー</div>');
+      setTimeout(function () { $("#ping_result").fadeOut(1000); }, 7000);
+    });
+  });
+});
+</script>
+{% endblock %}

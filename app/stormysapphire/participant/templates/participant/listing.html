@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load participant %}
+{% block title %} | 端末管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'participant/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>端末管理</h1>
+</div>
+
+<p class="lead">端末の追加・編集・削除を行います。</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="btn-group">
+      <a href="{% url 'participant_create' %}"><button type="button" class="btn btn-sm btn-primary">新規追加</button></a>
+      <a href="{% url 'participant_delete' %}" id="participant_delete_button"><button type="button" class="btn btn-sm btn-primary">選択した端末の削除</button></a>
+      <a href="{% url 'participant_import' %}"><button type="button" class="btn btn-sm btn-primary">インポート</button></a>
+      <a href="{% url 'participant_export' %}"><button type="button" class="btn btn-sm btn-primary">エクスポート</button></a>
+    </div>
+  </div>
+</div>
+
+{% if not participants %}
+<div class="alert alert-warning" role="alert">端末が存在しません。</div>
+{% else %}
+
+{% if participants.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if participants.has_previous %}<li><a href="?p={{ participants.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if participants.has_next %}<li><a href="?p={{ participants.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+
+<table class="table table-bordered">
+  <colgroup>
+    <col width="2%">
+    <col width="33%">
+    <col width="33%">
+    <col width="32%">
+  </colgroup>
+  <thead>
+    <tr class="bg-info">
+      <th><input type="checkbox" id="participant_delete_check_all" name="participant_delete_check_all"></input></th>
+      <th>システム名</th>
+      <th>IP アドレス / ISDN 電話番号</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for participant in participants %}
+    <tr>
+      <td class="participant_delete_check"><input type="checkbox" value="{{ participant.id }}"></input></td>
+      <td><a href="{% url 'participant_update' participant.id %}">{{ participant.display_name }}</a></td>
+      <td>{{ participant.ip_address|blank }}{% if participant.phone1 %} / {{ participant.phone1|blank }}{% endif %}</td>
+      <td>{{ participant.info|blank }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if participants.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if participants.has_previous %}<li><a href="?p={{ participants.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if participants.has_next %}<li><a href="?p={{ participants.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#participant_delete_check_all").on("click", function (e) {
+    $('.participant_delete_check input[type=checkbox]').prop('checked', $(this).is(':checked') ? true : false)
+  });
+
+  $('.participant_delete_check input[type=checkbox]').on("click", function (e) {
+    if (! $(this).is(':checked')) {
+      $('#participant_delete_check_all').prop('checked', false);
+    } else {
+      var ok = true;
+      $('.participant_delete_check input[type=checkbox]').each(function () {
+        if (! $(this).is(':checked')) { ok = false; }
+      })
+      if (ok) {
+        $('#participant_delete_check_all').prop('checked', true);
+      }
+    }
+  });
+
+  $("#participant_delete_button").on("click", function (e) {
+    if (! $(".participant_delete_check input[type=checkbox]:checked").size()) {
+      return false;
+    }
+    var query = {"participant_id": []};
+    $(".participant_delete_check input[type=checkbox]:checked").each(function () {
+      query["participant_id"].push(this.value);
+    })
+    this.href = "{% url 'participant_delete' %}" + "?" + decodeURIComponent($.param(query, true));
+  });
+});
+</script>
+{% endblock %}

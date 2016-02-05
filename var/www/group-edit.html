@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>遠隔講義予約システム</title>
+    <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="css/bootstrap/sticky-footer-navbar.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="js/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">遠隔講義予約システム</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">メニュー <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">会議予約</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">管理メニュー</li>
+                <li><a href="#">端末管理</a></li>
+                <li><a href="#">端末グループ管理</a></li>
+                <li><a href="#">アカウント管理</a></li>
+                <li><a href="#">アカウントグループ管理</a></li>
+                <li><a href="#">会議テンプレート</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">ログアウト</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <table width="100%">
+        <colgroup>
+          <col width="45%">
+          <col width="10%">
+          <col width="45%">
+        </colgroup>
+        <tr>
+          <td>
+            <select name="groupSelection" id="groupSelection" class="form-control" style="margin: 0.5em 0"></select>
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>
+            <select name="participantSelectionFrom" id="participantSelectionFrom" multiple="multiple" size="5" class="form-control" style="height:150px"></select>
+          </td>
+          <td align="center">
+            <button id="participantAddButton" class="btn btn-warning" style="display: block; margin: 0.5em 0;">追加 &#9658;</button>
+            <button id="participantRemoveButton" class="btn btn-primary" style="display: block; margin: 0.5em 0;">&#9668; 削除</button>
+          </td>
+          <td>
+            <select name="participantSelectionTo" id="participantSelectionTo" multiple="multiple" size="5" class="form-control" style="height:150px"></select>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">フッターテキスト</p>
+      </div>
+    </footer>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script src="js/jquery.hashchange/1.4/jquery.hashchange.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/common.js"></script>
+    <script type="text/javascript">
+$(document).ready(function () {
+  var groups = [
+    {
+      "name": "01.Ｉwate-ren", "value": 1, "list": [
+        {"name": "01.帯広畜産大学", "value": 1},
+        {"name": "02.弘前大学", "value": 2},
+        {"name": "03.岩手大学　連合", "value": 3},
+        {"name": "04.山形大学", "value": 4}
+      ]
+    },
+    {
+      "name": "02.Noko-u-ren", "value": 2, "list": [
+        {"name": "05.茨城大学", "value": 5},
+        {"name": "06.宇都宮大学", "value": 6},
+        {"name": "08.東京農工大学　府中連合", "value": 8}
+      ]
+    },
+    {
+      "name": "03.Gihu-ren", "value": 3, "list": [
+        {"name": "11.静岡大学", "value": 11},
+        {"name": "12.岐阜大学", "value": 12}
+      ]
+    },
+    {
+      "name": "04.Tottori-ren", "value": 4, "list": [
+        {"name": "13.鳥取大学", "value": 13},
+        {"name": "14.島根大学", "value": 14},
+        {"name": "15.山口大学", "value": 15}
+      ]
+    },
+    {
+      "name": "05.Ehime-ren", "value": 5, "list": [
+        {"name": "16.香川大学", "value": 16},
+        {"name": "17.愛媛大学　連合", "value": 17},
+        {"name": "19.高知大学", "value": 19}
+      ]
+    },
+    {
+      "name": "06.kagosima-ren", "value": 6, "list": [
+        {"name": "20.佐賀大学", "value": 20},
+        {"name": "21.鹿児島大学　連合", "value": 21},
+        {"name": "22.鹿児島大学　水産学部", "value": 22},
+        {"name": "23.琉球大学", "value": 23}
+      ]
+    },
+    {
+      "name": "08.全拠点（連合農学）", "value": 7, "list": [
+        {"name": "01.帯広畜産大学", "value": 1},
+        {"name": "02.弘前大学", "value": 2},
+        {"name": "03.岩手大学　連合", "value": 3},
+        {"name": "04.山形大学", "value": 4},
+        {"name": "05.茨城大学", "value": 5},
+        {"name": "06.宇都宮大学", "value": 6},
+        {"name": "08.東京農工大学　府中連合", "value": 8},
+        {"name": "11.静岡大学", "value": 11},
+        {"name": "12.岐阜大学", "value": 12},
+        {"name": "13.鳥取大学", "value": 13},
+        {"name": "14.島根大学", "value": 14},
+        {"name": "15.山口大学", "value": 15},
+        {"name": "16.香川大学", "value": 16},
+        {"name": "17.愛媛大学　連合", "value": 17},
+        {"name": "19.高知大学", "value": 19},
+        {"name": "20.佐賀大学", "value": 20},
+        {"name": "21.鹿児島大学　連合", "value": 21},
+        {"name": "22.鹿児島大学　水産学部", "value": 22},
+        {"name": "23.琉球大学", "value": 23}
+      ]
+    },
+    {
+      "name": "09.TUAT", "value": 9, "list": [
+        {"name": "07.東京農工大学　府中本部", "value": 7},
+        {"name": "08.東京農工大学　府中連合", "value": 8},
+        {"name": "09.東京農工大学　小金井中央棟5階", "value": 9},
+        {"name": "10.東京農工大学　小金井8号館K3D", "value": 10},
+        {"name": "24.農工大　小金井11号多目的", "value": 54},
+        {"name": "25.農工大　小金井L1321", "value": 55},
+        {"name": "26.農工大　小金井 L1331", "value": 56},
+        {"name": "27.農工大　小金井 L0111", "value": 57},
+        {"name": "28.農工大　小金井 L0026", "value": 58},
+        {"name": "29.農工大　府中本館講堂", "value": 59},
+        {"name": "30.農工大　府中25番教室", "value": 60},
+        {"name": "31.農工大　小金井中央棟 中会議", "value": 61},
+        {"name": "32.農工大　小金井BASE専攻長室", "value": 62},
+        {"name": "33.農工大　府中本館第２会議室", "value": 63},
+        {"name": "34.農工大　小金井8号館K5A-Polycom", "value": 64},
+        {"name": "35.農工大　府中学務教育支援室１", "value": 65},
+        {"name": "36.農工大　小金井中央棟2F会議室", "value": 66},
+        {"name": "37.農工大　小金井8号館K5A-Sonyテスト", "value": 67},
+        {"name": "39.農工大　小金井8号館K3A", "value": 70},
+        {"name": "40.農工大　府中遠隔講義室F2B", "value": 71},
+        {"name": "42.農工大　府中新4号館32番教室", "value": 80},
+        {"name": "46.農工大 府中　第1講義棟22番教室", "value": 84},
+        {"name": "47.農工大 府中　第1講義棟23番教室", "value": 85}
+      ]
+    },
+    {
+      "name": "10.Ehime", "value": 10, "list": [
+        {"name": "17.愛媛大学　連合", "value": 17},
+        {"name": "18.愛媛大学　大講義室", "value": 18}
+      ]
+    },
+    {
+      "name": "11.Kagoshima", "value": 11, "list": [
+        {"name": "21.鹿児島大学　連合", "value": 21},
+        {"name": "22.鹿児島大学　水産学部", "value": 22}
+      ]
+    },
+    {
+      "name": "12.Reserved", "value": 13, "list": [
+        {"name": "24.農工大　小金井11号多目的", "value": 54},
+        {"name": "25.農工大　小金井L1321", "value": 55},
+        {"name": "26.農工大　小金井 L1331", "value": 56},
+        {"name": "27.農工大　小金井 L0111", "value": 57},
+        {"name": "28.農工大　小金井 L0026", "value": 58},
+        {"name": "29.農工大　府中本館講堂", "value": 59},
+        {"name": "30.農工大　府中25番教室", "value": 60},
+        {"name": "31.農工大　小金井中央棟 中会議", "value": 61},
+        {"name": "32.農工大　小金井BASE専攻長室", "value": 62},
+        {"name": "33.農工大　府中本館第２会議室", "value": 63},
+        {"name": "34.農工大　小金井8号館K5A-Polycom", "value": 64},
+        {"name": "35.農工大　府中学務教育支援室１", "value": 65},
+        {"name": "36.農工大　小金井中央棟2F会議室", "value": 66},
+        {"name": "37.農工大　小金井8号館K5A-Sonyテスト", "value": 67},
+        {"name": "38.香川大学 BW106", "value": 68}
+      ]
+    },
+    {
+      "name": "99.dummy00", "value": 8, "list": [
+        {"name": "dummy100", "value": 33},
+        {"name": "dummy101", "value": 34},
+        {"name": "dummy102", "value": 35},
+        {"name": "dummy103", "value": 36},
+        {"name": "dummy104", "value": 37},
+        {"name": "dummy105", "value": 38},
+        {"name": "dummy106", "value": 39},
+        {"name": "dummy107", "value": 40},
+        {"name": "dummy108", "value": 41},
+        {"name": "dummy109", "value": 42}
+      ]
+    },
+    {
+      "name": "99.dummy01", "value": 12, "list": [
+        {"name": "dummy110", "value": 43},
+        {"name": "dummy111", "value": 44},
+        {"name": "dummy112", "value": 45},
+        {"name": "dummy113", "value": 46},
+        {"name": "dummy114", "value": 47},
+        {"name": "dummy115", "value": 48},
+        {"name": "dummy116", "value": 49},
+        {"name": "dummy117", "value": 50},
+        {"name": "dummy118", "value": 51},
+        {"name": "dummy119", "value": 52}
+      ]
+    },
+    {
+      "name": "全ての端末", "value": -1, "list": [
+        {"name": "01.帯広畜産大学", "value": 1},
+        {"name": "02.弘前大学", "value": 2},
+        {"name": "03.岩手大学　連合", "value": 3},
+        {"name": "04.山形大学", "value": 4},
+        {"name": "05.茨城大学", "value": 5},
+        {"name": "06.宇都宮大学", "value": 6},
+        {"name": "07.東京農工大学　府中本部", "value": 7},
+        {"name": "08.東京農工大学　府中連合", "value": 8},
+        {"name": "09.東京農工大学　小金井中央棟5階", "value": 9},
+        {"name": "10.東京農工大学　小金井8号館K3D", "value": 10},
+        {"name": "11.静岡大学", "value": 11},
+        {"name": "12.岐阜大学", "value": 12},
+        {"name": "13.鳥取大学", "value": 13},
+        {"name": "14.島根大学", "value": 14},
+        {"name": "15.山口大学", "value": 15},
+        {"name": "16.香川大学", "value": 16},
+        {"name": "17.愛媛大学　連合", "value": 17},
+        {"name": "18.愛媛大学　大講義室", "value": 18},
+        {"name": "19.高知大学", "value": 19},
+        {"name": "20.佐賀大学", "value": 20},
+        {"name": "21.鹿児島大学　連合", "value": 21},
+        {"name": "22.鹿児島大学　水産学部", "value": 22},
+        {"name": "23.琉球大学", "value": 23},
+        {"name": "24.農工大　小金井11号多目的", "value": 54},
+        {"name": "25.農工大　小金井L1321", "value": 55},
+        {"name": "26.農工大　小金井 L1331", "value": 56},
+        {"name": "27.農工大　小金井 L0111", "value": 57},
+        {"name": "28.農工大　小金井 L0026", "value": 58},
+        {"name": "29.農工大　府中本館講堂", "value": 59},
+        {"name": "30.農工大　府中25番教室", "value": 60},
+        {"name": "31.農工大　小金井中央棟 中会議", "value": 61},
+        {"name": "32.農工大　小金井BASE専攻長室", "value": 62},
+        {"name": "33.農工大　府中本館第２会議室", "value": 63},
+        {"name": "34.農工大　小金井8号館K5A-Polycom", "value": 64},
+        {"name": "35.農工大　府中学務教育支援室１", "value": 65},
+        {"name": "36.農工大　小金井中央棟2F会議室", "value": 66},
+        {"name": "37.農工大　小金井8号館K5A-Sonyテスト", "value": 67},
+        {"name": "38.香川大学 BW106", "value": 68},
+        {"name": "39.農工大　小金井8号館K3A", "value": 70},
+        {"name": "40.農工大　府中遠隔講義室F2B", "value": 71},
+        {"name": "41.岩手大学生命系_遠隔講義室", "value": 72},
+        {"name": "42.農工大　府中新4号館32番教室", "value": 80},
+        {"name": "43.岩手大学　農学部７番講義室", "value": 81},
+        {"name": "44.岩手大学　動物病院　実習室３", "value": 82},
+        {"name": "45.岩手大学 産業動物診療棟遠隔講義室", "value": 83},
+        {"name": "46.農工大 府中　第1講義棟22番教室", "value": 84},
+        {"name": "47.農工大 府中　第1講義棟23番教室", "value": 85},
+        {"name": "KEIO-SFC-RMX2000", "value": 53},
+        {"name": "Polycom_TestSite", "value": 24},
+        {"name": "dummy100", "value": 33},
+        {"name": "dummy101", "value": 34},
+        {"name": "dummy102", "value": 35},
+        {"name": "dummy103", "value": 36},
+        {"name": "dummy104", "value": 37},
+        {"name": "dummy105", "value": 38},
+        {"name": "dummy106", "value": 39},
+        {"name": "dummy107", "value": 40},
+        {"name": "dummy108", "value": 41},
+        {"name": "dummy109", "value": 42},
+        {"name": "dummy110", "value": 43},
+        {"name": "dummy111", "value": 44},
+        {"name": "dummy112", "value": 45},
+        {"name": "dummy113", "value": 46},
+        {"name": "dummy114", "value": 47},
+        {"name": "dummy115", "value": 48},
+        {"name": "dummy116", "value": 49},
+        {"name": "dummy117", "value": 50},
+        {"name": "dummy118", "value": 51},
+        {"name": "dummy119", "value": 52},
+        {"name": "農工大　府中　新2号館2階-Codec", "value": 73},
+        {"name": "農工大　府中新2号館1F会議室", "value": 77},
+        {"name": "農工大　府中新2号館4Fゼミ室", "value": 78},
+        {"name": "農工大　府中新2号館5F学科長室", "value": 79},
+        {"name": "農工大　本部情報係-テスト", "value": 75},
+        {"name": "農工大　８号館K5D-Polycom", "value": 74},
+        {"name": "農工大　８号館テストSONY", "value": 76}
+      ]
+    }
+  ];
+
+  var groupsIndex = {}
+  var participantsIndex = {}
+
+  $.each(groups, function () {
+    var group = this;
+    groupsIndex[group.value] = group;
+    $("#groupSelection").append($("<option>").val(group.value).text(group.name));
+
+    $.each(group.list, function () {
+      var participant = this;
+      participantsIndex[participant.value] = participant;
+    });
+  });
+
+  $("#groupSelection").on("change", function () {
+    var selected = $(this).children(':selected');
+    var participants = groupsIndex[selected.val()].list;
+    $("#participantSelectionFrom > option").remove();
+    $.each(participants, function() {
+      var participant = this;
+      $("#participantSelectionFrom").append($("<option>").val(participant.value).text(participant.name));
+    });
+  });
+
+  $("#participantAddButton").on("click", function () {
+    $("#participantSelectionFrom option:selected").each(function() {
+      var value = $(this).val();
+      var name = $(this).text();
+      if ($("#participantSelectionTo option[value='" + value + "']").size() == 0) {
+        $("#participantSelectionTo").append($("<option>").val(value).text(name));
+      }
+    });
+  });
+
+  $("#participantRemoveButton").on("click", function () {
+    $("#participantSelectionTo option:selected").each(function() {
+      this.remove();
+    });
+  });
+
+  $(window).hashchange(function() {
+    $("#participantSelectionFrom > option").remove();
+    var participants = groupsIndex["1"].list;
+    $.each(participants, function() {
+      var participant = this;
+      $("#participantSelectionFrom").append($("<option>").val(participant.value).text(participant.name));
+    });
+
+    $("#participantSelectionTo > option").remove();
+    var match = location.hash.match(/participant((\d+,?){1,})/);
+    if (match) {
+      values = match[1].split(",");
+    }
+    $.each(values, function() {
+      var value = this;
+      var name = participantsIndex[value].name;
+      if ($("#participantSelectionTo option[value='" + value + "']").size() == 0) {
+        $("#participantSelectionTo").append($("<option>").val(value).text(name));
+      }
+    });
+  });
+
+  $(window).hashchange();
+});
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load menu %}
+{% block title %} | 管理メニュー{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'menu/parts/breadcrum' with active='管理メニュー' %}
+
+<div class="page-header">
+  <h1>管理メニュー</h1>
+</div>
+
+<div class="list-group">
+  <a href="{% url 'participant_listing' %}" class="list-group-item">端末管理</a>
+  <a href="{% url 'participant_group_listing' %}" class="list-group-item">端末グループ管理</a>
+  <a href="{% url 'account_listing' %}" class="list-group-item">アカウント管理</a>
+  <a href="{% url 'account_group_listing' %}" class="list-group-item">アカウントグループ管理</a>
+  <a href="" class="list-group-item">会議テンプレート</a>
+  <a href="" class="list-group-item">録画端末管理</a>
+  <a href="" class="list-group-item">会議レポート</a>
+  <a href="" class="list-group-item">TMP 管理</a>
+  <a href="" class="list-group-item">MCU 管理</a>
+</div>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}

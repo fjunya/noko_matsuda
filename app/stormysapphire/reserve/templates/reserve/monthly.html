@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load reserve %}
+{% block title %} | 会議予約{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'reserve/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>会議予約 (月表示) <span>{{ date_gte|date:'Y年m月' }}</span></h1>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">日付をクリックすると、日単位での予約一覧が表示されます。</div>
+</div>
+
+<div class="day_nav btn-toolbar" role="toolbar">
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_monthly' pages.previous_month_param %}" class="btn btn-sm btn-default">&laquo; 前の月</a>
+    <a href="{% url 'reserve_now_monthly' %}" class="btn btn-sm btn-default">今月</a>
+    <a href="{% url 'reserve_monthly' pages.next_month_param %}" class="btn btn-sm btn-default">次の月 &raquo;</a>
+  </div>
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_now_weekly' %}" class="btn btn-sm btn-default">今週</a>
+    <a href="{% url 'reserve_now_daily' %}" class="btn btn-sm btn-default">今日</a>
+  </div>
+</div>
+
+<table class="table table-bordered table-condensed time_table monthly">
+  <tr>
+    <th class="bg-info">日</th>
+    <th class="bg-info">月</th>
+    <th class="bg-info">火</th>
+    <th class="bg-info">水</th>
+    <th class="bg-info">木</th>
+    <th class="bg-info">金</th>
+    <th class="bg-info">土</th>
+  </tr>
+  {% for week in calendar %}
+  <tr>
+    {% for day in week %}
+    <td class="{% if day != 0 %}day{% endif %}{% if forloop.first %} sunday{% elif forloop.last %} saturday{% endif %}"{% if day != 0 %} id="date_{{ date_gte|date:'Ym' }}{{ day|stringformat:'02d' }}"{% endif %}><div class="day_num">{% if day != 0 %}{{ day }}{% endif %}</div><div class="reservations"></div></td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  var date_reservations = {
+    {% for item in date_reservations %}
+    "{{ item.date|date:'Ymd' }}": {{ item.reservations }}{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  };
+
+  var holidays = [
+    {% for holiday in holidays %}
+    "{{ holiday|date:'Ymd' }}"{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  ];
+
+  $.each(date_reservations, function (date, reservations) {
+    $("#date_" + date + " .reservations").append(reservations);
+  });
+
+  $.each(holidays, function () {
+    var date = this;
+    $("#date_" + date).addClass("holiday");
+  });
+
+  $(".time_table .day").on("click", function (e) {
+    var ymd = $(this).prop("id").slice(5);
+    location.href = "/reserve/daily/" + ymd + "/2";
+  });
+
+  $("#date_" + {{ now|date:'Ymd' }}).addClass("today");
+});
+</script>
+{% endblock %}

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>遠隔講義予約システム</title>
+    <link href="css/bootstrap/3.3.6/bootstrap.min.css" rel="stylesheet">
+    <link href="css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="css/bootstrap/sticky-footer-navbar.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <!--[if lt IE 9]><script src="js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="js/ie-emulation-modes-warning.js"></script>
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="js/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">遠隔講義予約システム</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">メニュー <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">会議予約</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">管理メニュー</li>
+                <li><a href="#">端末管理</a></li>
+                <li><a href="#">端末グループ管理</a></li>
+                <li><a href="#">アカウント管理</a></li>
+                <li><a href="#">アカウントグループ管理</a></li>
+                <li><a href="#">会議テンプレート</a></li>
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">ログアウト</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <ul class="layout-type-group-btn-list list-inline">
+        <li id="layout-type-group-btn-1"><a href="#">1</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-1"><a href="#"><img src="image/layout/1.gif"></a></li>
+          </ul>
+        </li>
+        <li id="layout-type-group-btn-2"><a href="#">2</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-12"><a href="#"><img src="image/layout/12.gif"></a></li>
+            <li id="layout-type-btn-16"><a href="#"><img src="image/layout/16.gif"></a></li>
+          </ul>
+        </li>
+        <li id="layout-type-group-btn-3"><a href="#">3</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-13"><a href="#"><img src="image/layout/13.gif"></a></li>
+            <li id="layout-type-btn-17"><a href="#"><img src="image/layout/17.gif"></a></li>
+          </ul>
+        </li>
+        <li id="layout-type-group-btn-4"><a href="#">4</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-2"><a href="#"><img src="image/layout/2.gif"></a></li>
+            <li id="layout-type-btn-14"><a href="#"><img src="image/layout/14.gif"></a></li>
+          </ul>
+        </li>
+        <li id="layout-type-group-btn-5"><a href="#">5+</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-5"><a href="#"><img src="image/layout/5.gif"></a></li>
+            <li id="layout-type-btn-6"><a href="#"><img src="image/layout/6.gif"></a></li>
+            <li id="layout-type-btn-15"><a href="#"><img src="image/layout/15.gif"></a></li>
+            <li id="layout-type-btn-19"><a href="#"><img src="image/layout/19.gif"></a></li>
+          </ul>
+        </li>
+        <li id="layout-type-group-btn-9"><a href="#">9</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-3"><a href="#"><img src="image/layout/3.gif"></a></li>
+            <li id="layout-type-btn-20"><a href="#"><img src="image/layout/20.gif"></a></li>
+            <li id="layout-type-btn-21"><a href="#"><img src="image/layout/21.gif"></a></li>
+            <li id="layout-type-btn-24"><a href="#"><img src="image/layout/24.gif"></a></li>
+          </ul>
+        </li>
+        <li id="layout-type-group-btn-10"><a href="#">10+</a>
+          <ul class="list-inline layout-type-btn-list" style="display: none;">
+            <li id="layout-type-btn-4"><a href="#"><img src="image/layout/4.gif"></a></li>
+            <li id="layout-type-btn-9"><a href="#"><img src="image/layout/9.gif"></a></li>
+            <li id="layout-type-btn-25"><a href="#"><img src="image/layout/25.gif"></a></li>
+            <li id="layout-type-btn-33"><a href="#"><img src="image/layout/33.gif"></a></li>
+            <li id="layout-type-btn-43"><a href="#"><img src="image/layout/43.gif"></a></li>
+          </ul>
+        </li>
+      </ul>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-1" style="display: none;">
+        <tr>
+          <td class="r1-1"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-2" style="display: none;">
+        <tr>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-3" style="display: none;">
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-4" style="display: none;">
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-5" style="display: none;">
+        <tr>
+          <td class="r2-3" colspan="2" rowspan="2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-6" style="display: none;">
+        <tr>
+          <td class="r3-4" colspan="3" rowspan="3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-9" style="display: none;">
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-12" style="display: none;">
+        <tr>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-13" style="display: none;">
+        <tr>
+          <td class="r1-2" colspan="2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-14" style="display: none;">
+        <tr>
+          <td class="r2-3" colspan="3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-15" style="display: none;">
+        <tr>
+          <td class="r2-3" colspan="4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-3"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-16" style="display: none;">
+        <tr>
+          <td class="r1-1"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-1"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-17" style="display: none;">
+        <tr>
+          <td class="r1-1" rowspan="2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-19" style="display: none;">
+        <tr>
+          <td class="r1-1" rowspan="4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-20" style="display: none;">
+        <tr>
+          <td class="r2-4" colspan="4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-21" style="display: none;">
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r2-4" colspan="4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-24" style="display: none;">
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r2-4" colspan="4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-25" style="display: none;">
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r2-4" colspan="2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r2-4" colspan="2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-33" style="display: none;">
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r2-4" colspan="2" rowspan="2"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+      <table class="table table-bordered layout-type-table" id="layout-type-table-43" style="display: none;">
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+        <tr>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+          <td class="r1-4"><select class="form-control"><option>aaaaaaaaaaaaaaaaaaaaaa</option></select></td>
+        </tr>
+      </table>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <p class="text-muted">フッターテキスト</p>
+      </div>
+    </footer>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="js/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap/3.3.6/bootstrap.min.js"></script>
+    <script src="js/jquery.hashchange/1.4/jquery.hashchange.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+    <script src="js/common.js"></script>
+    <script type="text/javascript">
+$(document).ready(function () {
+  var groups = ["1", "2", "3", "4", "5", "9", "10"];
+  var type2group = {"1": "1", "2": "4", "3": "9", "4": "10", "5": "5",
+                    "6": "5", "9": "10", "12": "2", "13": "3", "14": "4",
+                    "15": "5", "16": "2", "17": "3", "19": "5", "20": "9",
+                    "21": "9", "24": "9", "25": "10", "33": "10", "43": "10"};
+  $.each(groups, function () {
+    var group = this;
+    $("#layout-type-group-btn-" + group + " > a").on("mouseover", function (e) {
+      $("ul.layout-type-btn-list").addClass("no-disp");
+      $("ul.layout-type-group-btn-list > li.active > ul").removeClass("no-disp");
+      $("ul.layout-type-btn-list.no-disp").hide();
+      $("ul.layout-type-btn-list").removeClass("no-disp");
+
+      $("#layout-type-group-btn-" + group + " > ul").fadeIn();
+    });
+
+    $("#layout-type-group-btn-" + group + " > a").on("click", function (e) {
+      e.preventDefault();
+    });
+  });
+
+  $.each(type2group, function (type, group) {
+    $("#layout-type-btn-" + type +" a").on("click", function (e) {
+      e.preventDefault();
+
+      $("ul.layout-type-group-btn-list > li").removeClass("active");
+      $("#layout-type-group-btn-" + group).addClass("active");
+
+      $("ul.layout-type-btn-list > li").removeClass("active");
+      $("#layout-type-btn-" + type).addClass("active");
+
+      $("table.layout-type-table").hide();
+      $("#layout-type-table-" + type).fadeIn();
+
+      $("ul.layout-type-btn-list").addClass("no-disp");
+      $("ul.layout-type-group-btn-list > li.active > ul").removeClass("no-disp");
+      $("ul.layout-type-btn-list.no-disp").hide();
+      $("ul.layout-type-btn-list").removeClass("no-disp");
+    });
+  });
+
+  $(window).hashchange(function() {
+    var type = 1;
+    var group = 1;
+    var match = location.hash.match(/layoutType(\d+)/);
+    if (match) {
+      type = match[1];
+      group = type2group[type];
+    }
+  
+    $("ul.layout-type-group-btn-list > li").removeClass("active");
+    $("#layout-type-group-btn-" + group).addClass("active");
+
+    $("ul.layout-type-btn-list > li").removeClass("active");
+    $("#layout-type-btn-" + type).addClass("active");
+
+    $("table.layout-type-table").hide();
+    $("#layout-type-table-" + type).fadeIn();
+
+    $("ul.layout-type-btn-list").addClass("no-disp");
+    $("ul.layout-type-group-btn-list > li.active > ul").removeClass("no-disp");
+    $("ul.layout-type-btn-list.no-disp").hide();
+    $("ul.layout-type-btn-list").removeClass("no-disp");
+
+    $("#layout-type-group-btn-" + group +" > ul").fadeIn();
+  });
+
+  $(window).hashchange();
+});
+    </script>
+  </body>
+</html>

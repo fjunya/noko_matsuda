@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load account %}
+{% block title %} | アカウント管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'account/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>アカウント管理</h1>
+</div>
+
+<p class="lead">アカウントの追加・編集・削除を行います。</p>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="btn-group">
+      <a href="{% url 'account_create' %}"><button type="button" class="btn btn-sm btn-primary">新規追加</button></a>
+      <a href="{% url 'account_delete' %}" id="account_delete_button"><button type="button" class="btn btn-sm btn-primary">選択したアカウントの削除</button></a>
+      <a href="{% url 'account_import' %}"><button type="button" class="btn btn-sm btn-primary">インポート</button></a>
+      <a href="{% url 'account_export' %}"><button type="button" class="btn btn-sm btn-primary">エクスポート</button></a>
+    </div>
+  </div>
+</div>
+
+{% if not accounts %}
+<div class="alert alert-warning" role="alert">アカウントが存在しません。</div>
+{% else %}
+
+{% if accounts.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if accounts.has_previous %}<li><a href="?p={{ accounts.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if accounts.has_next %}<li><a href="?p={{ accounts.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+
+<table class="table table-bordered">
+  <colgroup>
+    <col width="2%">
+  </colgroup>
+  <thead>
+    <tr class="bg-info">
+      <th><input type="checkbox" id="account_delete_check_all" name="account_delete_check_all"></input></th>
+      <th>ユーザ ID</th>
+      <th>権限</th>
+      <th>氏名</th>
+      <th>メールアドレス</th>
+      <th>部署</th>
+      <th>TEL</th>
+      <th>説明</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for account in accounts %}
+    <tr>
+      <td class="account_delete_check"><input type="checkbox" value="{{ account.user.id }}"></input></td>
+      <td><a href="{% url 'account_update' account.user.id %}">{{ account.user.username }}</a></td>
+      <td>{% if account.user.is_staff %}管理者{% else %}ユーザー{% endif %}</td>
+      <td>{{ account.user.last_name|blank }} {{ account.user.first_name|blank }}</td>
+      <td>{{ account.user.email|blank }}</td>
+      <td>{{ account.dept|blank }}</td>
+      <td>{{ account.tel|blank }}</td>
+      <td>{{ account.info|blank }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if accounts.paginator.num_pages > 1 %}
+<ul class="pagination">
+  {% if accounts.has_previous %}<li><a href="?p={{ accounts.previous_page_number }}">&laquo; 前ページへ</a></li>{% endif %}{% if accounts.has_next %}<li><a href="?p={{ accounts.next_page_number }}">次ページへ &raquo;</a></li>{% endif %}
+</ul>
+{% endif %}
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  $("#account_delete_check_all").on("click", function (e) {
+    $('.account_delete_check input[type=checkbox]').prop('checked', $(this).is(':checked') ? true : false)
+  });
+
+  $('.account_delete_check input[type=checkbox]').on("click", function (e) {
+    if (! $(this).is(':checked')) {
+      $('#account_delete_check_all').prop('checked', false);
+    } else {
+      var ok = true;
+      $('.account_delete_check input[type=checkbox]').each(function () {
+        if (! $(this).is(':checked')) { ok = false; }
+      })
+      if (ok) {
+        $('#account_delete_check_all').prop('checked', true);
+      }
+    }
+  });
+
+  $("#account_delete_button").on("click", function (e) {
+    if (! $(".account_delete_check input[type=checkbox]:checked").size()) {
+      return false;
+    }
+    var query = {"user_id": []};
+    $(".account_delete_check input[type=checkbox]:checked").each(function () {
+      query["user_id"].push(this.value);
+    })
+    this.href = "{% url 'account_delete' %}" + "?" + decodeURIComponent($.param(query, true));
+  });
+});
+</script>
+{% endblock %}

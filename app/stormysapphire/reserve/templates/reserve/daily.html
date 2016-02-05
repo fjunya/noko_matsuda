@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load reserve %}
+{% block title %} | 日表示{% endblock %}
+{% block style %}
+<style type="text/css">
+td.reserve_delete_check, th.reserve_delete_check { text-align: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'reserve/parts/breadcrum' with active='日表示' %}
+
+<div class="page-header">
+  <h1>日表示 <span>{{ date|date:'Y年m月d日' }}</span></h1>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p>
+      新規予約ボタン・リソース空き状況をクリックすると、会議の予約画面が表示されます。<br />
+      会議名をクリックすると、予約の編集画面が表示されます。<br />
+      チェックボックスにチェックをして削除ボタンをクリックすると、予約が削除されます。<br />
+      <a href="" id="rsc_illustration_label">リソース空き状況の色分け <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span></a>
+    </p>
+    <ul id="rsc_illustration" style="display: none" class="no-disp">
+      <li><span class="label label-default">白色</span> 使用されていません</li>
+      <li><span class="label label-default fair">黄色</span> 50% 未満使用</li>
+      <li><span class="label label-default warn">オレンジ色</span> 50% 以上 100% 未満使用</li>
+      <li><span class="label label-default max">赤色</span> 全て使用</li>
+    </ul>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="btn-group">
+      <a href="" id="reserve_create_button"><button type="button" class="btn btn-sm btn-primary">新規予約</button></a>
+    </div>
+  </div>
+</div>
+
+<div class="day_nav btn-toolbar" role="toolbar">
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_daily' pages.previous_day_param 2 %}" class="btn btn-sm btn-default">&laquo; 前の日</a>
+    <a href="{% url 'reserve_now_daily' %}" class="btn btn-sm btn-default">今日</a>
+    <a href="{% url 'reserve_daily' pages.next_day_param 2 %}" class="btn btn-sm btn-default">次の日 &raquo;</a>
+  </div>
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_monthly' pages.month_param %}" class="btn btn-sm btn-default">月表示</a>
+    <a href="{% url 'reserve_weekly' pages.week_param 2 %}" class="btn btn-sm btn-default">週表示</a>
+  </div>
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_now_monthly' %}" class="btn btn-sm btn-default">今月</a>
+    <a href="{% url 'reserve_now_weekly' %}" class="btn btn-sm btn-default">今週</a>
+  </div>
+</div>
+
+<ul class="time_nav nav nav-tabs">
+  <li role="presentation"{% if time_range == '1' %} class="active"{% endif %}><a href="{% url 'reserve_daily' pages.active_day_param 1 %}">0〜9時</a></li>
+  <li role="presentation"{% if time_range == '2' %} class="active"{% endif %}><a href="{% url 'reserve_daily' pages.active_day_param 2 %}">8〜17時</a></li>
+  <li role="presentation"{% if time_range == '3' %} class="active"{% endif %}><a href="{% url 'reserve_daily' pages.active_day_param 3 %}">14〜23時</a></li>
+</ul>
+
+<table class="table table-bordered table-condensed time_table">
+  <tr>
+    <th class="bg-info"></th>
+    <th class="bg-info">リソース空き状況</th>
+    {% for hour_item in resource_slots %}
+    {% for slot in hour_item.slots %}
+    <td class="slot rsc_slot_button" id="rsc_slot_{{ slot|stringformat:'03d' }}"></td>
+    {% endfor %}
+    {% endfor %}
+  </tr>
+  <tr>
+    <th class="reserve_delete_check bg-info"><button type="button" id="reserve_delete_button" class="btn btn-primary btn-xs">削除</button></th>
+    <th class="bg-info">会議名</th>
+    {% for hour_item in resource_slots %}
+    <th class="bg-info slot" colspan="6">
+      {{ hour_item.hour }}
+    </th>
+    {% endfor %}
+  </tr>
+
+  {% for item in conference_resources %}
+  <tr>
+    <td class="reserve_delete_check"><input type="checkbox" value="{{ item.conference.id }}"></input></td>
+    <td><a href="#">{{ item.conference.title }}</a> <a href="" id="mail_{{ item.conference.id }}"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a></td>
+    {% for hour_item in resource_slots %}
+    {% for slot in hour_item.slots %}
+    <td class="slot" id="conference_{{ item.conference.id }}_slot_{{ slot|stringformat:'03d' }}"></td>
+    {% endfor %}
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/jquery.mailto/0.2/jquery.mailto.js"></script>
+<script type="text/javascript">
+function slot_to_time_str(slot) {
+  var hour = Math.floor(slot / 6);
+  var min = 10 * (slot % 6);
+  return ("0" + hour).slice(-2) + ":" + ("0" + min).slice(-2);
+}
+
+$(document).ready(function () {
+  var conference_resources = {
+    {% for item in conference_resources %}
+    "{{ item.conference.id }}": {
+        "title": "{{ item.conference.title }}",
+        "userName": "{{ item.conference.userName }}",
+        "participants": [
+          {% for participant in item.conference.participants.all %}
+            "{{ participant.display_name }}"{% if forloop.last %}{% else %},{% endif %}
+          {% endfor %}
+        ],
+        "reservation_id": {{ item.conference.id }},
+        "slots": [
+        {% for resource in item.resources %}
+          {{ resource.slot }}{% if forloop.last %}{% else %},{% endif %}
+        {% endfor %}
+        ]{% if forloop.last %}{% else %},{% endif %}
+
+    }{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  };
+
+  var slot_resource_statuses = {
+    {% for item in slot_resource_statuses %}
+    "{{ item.slot }}": "{{ item.resource_status }}"{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  };
+
+  $.each(conference_resources, function (conference_id, item) {
+    $.each(item.slots, function () {
+      var slot = this;
+      $("#conference_" + conference_id +
+        "_slot_" + ("00" +slot).slice(-3)).addClass("reserved");
+    });
+
+    var slots = conference_resources[conference_id].slots;
+    var start_time = slot_to_time_str(slots[0]);
+    var end_time = slot_to_time_str(slots[slots.length - 1]);
+    $("#mail_" + conference_id).mailto({
+      to: "",
+      subject: "conference information",
+      body: (conference_resources[conference_id].userName + "\n" +
+             conference_resources[conference_id].title + "\n\n" +
+             "{{ date|date:'Y' }}/{{ date|date:'m' }}/{{ date|date:'d' }} " + start_time + " - " + end_time + "\n\n\n" +
+             conference_resources[conference_id].participants.join(", ") + "\n" +
+             "http://\n" +
+             conference_resources[conference_id].reservation_id)
+    });
+  });
+
+  $.each(slot_resource_statuses, function (slot, resource_status) {
+    $("#rsc_slot_" + ("00" + slot).slice(-3)).addClass(
+      "rsc_" + resource_status);
+  });
+
+  $(".rsc_slot_button").on("click", function (e) {
+    e.preventDefault();
+    var slot = $(this).prop("id").slice(9);
+    var year = {{ date|date:'Y' }};
+    var month = {{ date|date:'m' }};
+    var day = {{ date|date:'d' }};
+    alert(
+      year + "-" +
+      ("0" + month).slice(-2) + "-" +
+      ("0" + day).slice(-2) + " " +
+      slot_to_time_str(slot) +
+      " 開始の会議予約を作成します。");
+  });
+
+  $("#reserve_delete_button").on("click", function (e) {
+    e.preventDefault();
+    if (! $(".reserve_delete_check input[type=checkbox]:checked").size()) {
+      return false;
+    }
+    var query = {"conference_id": []};
+    $(".reserve_delete_check input[type=checkbox]:checked").each(function () {
+      query["conference_id"].push(this.value);
+    })
+    alert("次の会議を削除します。 " +
+          "?" + decodeURIComponent($.param(query, true)));
+  });
+
+  $("#reserve_create_button").on("click", function (e) {
+    e.preventDefault();
+    var now = new Date();
+    var year = {{ date|date:'Y' }};
+    var month = {{ date|date:'m' }};
+    var day = {{ date|date:'d' }};
+    var hour = now.getHours();
+    var min = Math.floor(now.getMinutes() / 10) * 10;
+    alert(
+      year + "-" +
+      ("0" + month).slice(-2) + "-" +
+      ("0" + day).slice(-2) + " " +
+      ("0" + hour).slice(-2) + ":" +
+      ("0" + min).slice(-2) +
+      " 開始の会議予約を作成します。");
+  });
+
+  $("#rsc_illustration_label").on("click", function (e) {
+    e.preventDefault();
+    if ($("#rsc_illustration").hasClass("no-disp")) {
+      $("#rsc_illustration").removeClass("no-disp");
+      $("#rsc_illustration").fadeIn();
+    } else {
+      $("#rsc_illustration").addClass("no-disp");
+      $("#rsc_illustration").fadeOut();
+    }
+  });
+});
+</script>
+{% endblock %}

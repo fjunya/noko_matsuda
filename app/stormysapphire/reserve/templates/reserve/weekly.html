@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load reserve %}
+{% block title %} | 週表示{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'reserve/parts/breadcrum' with active='週表示' %}
+
+<div class="page-header">
+  <h1>週表示 <span>{{ date_gte|date:'Y年m月d日' }}週</span></h1>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <p>
+      日付をクリックすると日表示が表示されます。<br />
+      リソース状況空きをクリックすると、会議の予約画面が表示されます。<br />
+      <a href="" id="rsc_illustration_label">リソース空き状況の色分け <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span></a>
+    </p>
+    <ul id="rsc_illustration" style="display: none" class="no-disp">
+      <li><span class="label label-default">白色</span> 使用されていません</li>
+      <li><span class="label label-default fair">黄色</span> 50% 未満使用</li>
+      <li><span class="label label-default warn">オレンジ色</span> 50% 以上 100% 未満使用</li>
+      <li><span class="label label-default max">赤色</span> 全て使用</li>
+    </ul>
+  </div>
+</div>
+
+<div class="day_nav btn-toolbar" role="toolbar">
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_weekly' pages.previous_week_param 2 %}" class="btn btn-sm btn-default">&laquo; 前の週</a>
+    <a href="{% url 'reserve_now_weekly' %}" class="btn btn-sm btn-default">今週</a>
+    <a href="{% url 'reserve_weekly' pages.next_week_param 2 %}" class="btn btn-sm btn-default">次の週 &raquo;</a>
+  </div>
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_monthly' pages.month_param %}" class="btn btn-sm btn-default">月表示</a>
+  </div>
+  <div class="btn-group" role="group">
+    <a href="{% url 'reserve_now_monthly' %}" class="btn btn-sm btn-default">今月</a>
+    <a href="{% url 'reserve_now_daily' %}" class="btn btn-sm btn-default">今日</a>
+  </div>
+</div>
+
+<ul class="time_nav nav nav-tabs">
+  <li role="presentation"{% if time_range == '1' %} class="active"{% endif %}><a href="{% url 'reserve_weekly' pages.active_week_param 1 %}">0〜9時</a></li>
+  <li role="presentation"{% if time_range == '2' %} class="active"{% endif %}><a href="{% url 'reserve_weekly' pages.active_week_param 2 %}">8〜17時</a></li>
+  <li role="presentation"{% if time_range == '3' %} class="active"{% endif %}><a href="{% url 'reserve_weekly' pages.active_week_param 3 %}">14〜23時</a></li>
+</ul>
+
+<table class="table table-bordered table-condensed time_table">
+  <tr>
+    <th class="bg-info"></th>
+    {% for hour_item in resource_slots %}
+    <th class="bg-info slot" colspan="6">
+      {{ hour_item.hour }}
+    </th>
+    {% endfor %}
+  </tr>
+  {% for day_item in resource_slots_set %}
+  <tr>
+    <td{% if forloop.first %} class="sunday"{% elif forloop.last %} class="saturday"{% endif %}><a href="{% url 'reserve_daily' day_item.date|date:'Ymd' 2 %}">{{ day_item.date|date:'Y/m/d' }} ({{ day_item.date|jp_weekday }})</a></td>
+    {% for hour_item in day_item.items %}
+    {% for slot in hour_item.slots %}
+    <td class="slot rsc_slot_button" id="rsc_slot_{{ day_item.date|date:'Ymd' }}{{ slot|stringformat:'03d' }}"></td>
+    {% endfor %}
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function () {
+  var slot_resource_statuses = {
+    {% for item in slot_resource_statuses %}
+    "{{ item.date|date:'Ymd' }}{{ item.slot|stringformat:'03d' }}": "{{ item.resource_status }}"{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}
+  };
+
+  $.each(slot_resource_statuses, function (slot, resource_status) {
+    $("#rsc_slot_" + slot).addClass("rsc_" + resource_status);
+  });
+
+  $(".rsc_slot_button").on("click", function (e) {
+    var year = $(this).prop("id").slice(9, 13);
+    var month = $(this).prop("id").slice(13, 15);
+    var day = $(this).prop("id").slice(15, 17);
+    var slot = $(this).prop("id").slice(17);
+    var hour = Math.floor(slot / 6);
+    var min = 10 * (slot % 6);
+    alert(
+      year + "-" +
+      ("0" + month).slice(-2) + "-" +
+      ("0" + day).slice(-2) + " " +
+      ("0" + hour).slice(-2) + ":" +
+      ("0" + min).slice(-2) +
+      " 開始の会議予約を作成します。");
+  });
+
+  $("#rsc_illustration_label").on("click", function (e) {
+    e.preventDefault();
+    if ($("#rsc_illustration").hasClass("no-disp")) {
+      $("#rsc_illustration").removeClass("no-disp");
+      $("#rsc_illustration").fadeIn();
+    } else {
+      $("#rsc_illustration").addClass("no-disp");
+      $("#rsc_illustration").fadeOut();
+    }
+  });
+});
+</script>
+{% endblock %}

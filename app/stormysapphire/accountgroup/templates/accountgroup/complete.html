@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load accountgroup %}
+{% block title %} | アカウントグループ管理{% endblock %}
+{% block style %}
+{% endblock %}
+
+{% block content %}
+{% include 'accountgroup/parts/breadcrum' %}
+
+<div class="page-header">
+  <h1>アカウントグループ管理</h1>
+</div>
+
+<div class="alert alert-info" role="">
+  <a href="#" class="alert-link">{{ message }}</a>
+</div>
+<a href="{% url 'account_group_listing' %}" class="btn btn-lg btn-primary">一覧へ戻る</a>
+
+{% endblock %}
+
+{% block script %}
+{% endblock %}
