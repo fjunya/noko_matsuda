@@ -3,7 +3,7 @@ import csv
 import logging
 import subprocess
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import transaction
@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_protect
 from participant.forms import (DeleteForm, EditForm, ImportForm, ImportRowForm,
                                ListAPIForm)
 from participant.models import Participant
+from stormysapphire.decorators import login_required
 
 logger = logging.getLogger('common')
 

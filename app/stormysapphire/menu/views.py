@@ -1,11 +1,12 @@
 import logging
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_protect
 
+from stormysapphire.decorators import login_required
 from menu.models import Information
 from menu.forms import InformationEditForm
 

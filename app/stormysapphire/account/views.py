@@ -3,7 +3,7 @@ import csv
 from datetime import datetime
 import logging
 
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group, User
 from django.core.exceptions import ValidationError
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_protect
 from account.forms import (CreateForm, DeleteForm, ImportForm, ImportRowForm,
                            UpdateForm)
 from account.models import Account, AccountGroup
+from stormysapphire.decorators import login_required
 
 logger = logging.getLogger('common')
 

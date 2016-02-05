@@ -7,7 +7,6 @@ from dateutil.relativedelta import relativedelta
 
 import arrow
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.http import Http404, HttpResponseBadRequest, HttpResponse
@@ -15,6 +14,7 @@ from django.shortcuts import redirect, render
 
 from reserve.forms import ListAPIForm
 from reserve.models import Conference, Resource
+from stormysapphire.decorators import login_required
 
 calendar.setfirstweekday(calendar.SUNDAY)
 
